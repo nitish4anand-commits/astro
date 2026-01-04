@@ -55,6 +55,11 @@ summary::-webkit-details-marker{display:none}
 .result h3{margin:0 0 0.35rem 0}
 .card.highlight{box-shadow:0 16px 40px rgba(255,209,102,0.12);transform:translateY(-8px);border-color:rgba(255,209,102,0.25)}
 
+/* Natal chart UI tweaks */
+#natal-payload{background:rgba(0,0,0,0.25);padding:0.7rem;border-radius:8px;margin-top:0.6rem}
+#natal-output pre{background:rgba(255,255,255,0.03);padding:0.8rem;border-radius:8px;margin-top:0.6rem;white-space:pre-wrap}
+
+
 .site-footer{padding:2rem 0 4rem;color:var(--muted)}
 
 /* Responsive tweaks */

@@ -32,6 +32,47 @@
         <h3 id="result-sign"></h3>
         <p id="result-text"></p>
       </div>
+
+      <!-- Natal chart form -->
+      <form id="natalForm" class="dob-form" aria-label="Generate natal chart">
+        <label for="natal-date">Date of birth</label>
+        <div class="form-row">
+          <input id="natal-date" name="natal-date" type="date" required>
+          <input id="natal-time" name="natal-time" type="time" required>
+          <input id="natal-place" name="natal-place" type="text" placeholder="Place of birth (city, country)" required>
+        </div>
+
+        <label for="tzAuto" style="margin-top:0.75rem">Timezone</label>
+        <div class="form-row">
+          <label><input id="tzAuto" type="checkbox" checked> Auto-detect from place</label>
+          <input id="natal-tz" name="natal-tz" type="text" placeholder="Timezone ID (e.g. Europe/London)" disabled>
+        </div>
+
+        <label for="apiProvider" style="margin-top:0.75rem">Astrology API</label>
+        <div class="form-row">
+          <select id="apiProvider">
+            <option value="none">-- Select provider (optional) --</option>
+            <option value="astrologyapi">AstrologyAPI.com (requires key)</option>
+            <option value="prokerala">Prokerala (requires key)</option>
+            <option value="custom">Custom (enter URL below)</option>
+          </select>
+          <input id="apiKey" name="apiKey" type="text" placeholder="API key (if required)">
+        </div>
+
+        <label for="customUrl" style="margin-top:0.5rem">Custom API URL (POST)</label>
+        <div class="form-row">
+          <input id="customUrl" name="customUrl" type="url" placeholder="https://api.example.com/natal">
+          <button id="natalBtn" type="submit">Generate natal chart</button>
+        </div>
+
+        <p class="form-note">Note: This feature will geocode the place, determine timezone, then prepare a request for an astrology API. If you provide a provider and API key I can attempt the request — your birth data will be sent to that external service.</p>
+      </form>
+
+      <div id="natalResult" class="result" aria-live="polite" hidden>
+        <h3 id="natal-title">Natal Chart</h3>
+        <pre id="natal-payload" style="white-space:pre-wrap;word-break:break-word"></pre>
+        <div id="natal-output"></div>
+      </div>
     </section>
 
     <section class="zodiac-grid" aria-label="Zodiac signs">

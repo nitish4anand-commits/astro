@@ -71,4 +71,112 @@
 
     showResult(sign, horoscope);
   });
+
+  /* --- Natal chart helpers --- */
+  async function geocodePlace(place){
+    // Use Nominatim (OpenStreetMap) for geocoding
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`;
+    const res = await fetch(url, { headers: { 'User-Agent': 'AstrologyTemplate/1.0 (your-email@example.com)' } });
+    if(!res.ok) throw new Error('Geocoding failed');
+    const data = await res.json();
+    if(!data || data.length === 0) throw new Error('Place not found');
+    const top = data[0];
+    return { lat: parseFloat(top.lat), lon: parseFloat(top.lon), display_name: top.display_name };
+  }
+
+  async function getTimezoneFor(lat, lon){
+    // Use timeapi.io (no key) to resolve timezone by coordinates
+    const url = `https://timeapi.io/api/TimeZone/coordinate?latitude=${lat}&longitude=${lon}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Timezone lookup failed');
+    const data = await res.json();
+    // { "timeZone": "Europe/London", ... }
+    return data.timeZone || data.timezone || null;
+  }
+
+  function prepareNatalPayload({dateISO, timeISO, tz, lat, lon}){
+    // Common payload shape used by several astrology APIs
+    return {
+      birth_date: dateISO,       // YYYY-MM-DD
+      birth_time: timeISO,       // HH:MM
+      time_zone: tz,             // e.g. Europe/London
+      latitude: lat,
+      longitude: lon,
+      // Add other fields per provider if needed
+    };
+  }
+
+  async function callNatalApi(provider, apiKey, customUrl, payload){
+    // This is a safe wrapper: if provider is set to 'none' we just return the payload for review.
+    if(provider === 'none') return {ok:false, message:'No provider selected', payload};
+
+    if(provider === 'custom' && customUrl){
+      const res = await fetch(customUrl, {method:'POST', headers:{'Content-Type':'application/json','Authorization': apiKey ? `Bearer ${apiKey}` : undefined}, body: JSON.stringify(payload)});
+      const json = await res.json();
+      return {ok: res.ok, status: res.status, json};
+    }
+
+    // For provider-specific endpoints, we can adapt bodies/headers. For now we provide the prepared payload and instructions.
+    return {ok:false, message:'Provider integration not configured. Provide custom URL or set up server-side integration.', payload};
+  }
+
+  document.getElementById('natalForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const date = document.getElementById('natal-date').value;
+    const time = document.getElementById('natal-time').value;
+    const place = document.getElementById('natal-place').value;
+    const tzAuto = document.getElementById('tzAuto').checked;
+    const manualTz = document.getElementById('natal-tz').value.trim();
+    const apiProvider = document.getElementById('apiProvider').value;
+    const apiKey = document.getElementById('apiKey').value.trim();
+    const customUrl = document.getElementById('customUrl').value.trim();
+
+    if(!date || !time || !place){ alert('Please provide date, time and place for an accurate natal chart.'); return; }
+
+    const natalResult = document.getElementById('natalResult');
+    const payloadPre = document.getElementById('natal-payload');
+    const natalOut = document.getElementById('natal-output');
+    natalOut.innerHTML = '';
+
+    try{
+      const geo = await geocodePlace(place);
+      let tz = manualTz || null;
+      if(tzAuto){
+        tz = await getTimezoneFor(geo.lat, geo.lon);
+      }
+      const payload = prepareNatalPayload({dateISO: date, timeISO: time, tz, lat: geo.lat, lon: geo.lon});
+      payloadPre.textContent = JSON.stringify(payload, null, 2);
+      natalResult.hidden = false;
+
+      if(apiProvider === 'none' && !customUrl){
+        natalOut.innerHTML = `<p>Payload prepared. Provide an astrology API provider & key, or a custom API URL to fetch a natal chart.</p>`;
+        return;
+      }
+
+      natalOut.innerHTML = `<p>Calling ${apiProvider === 'custom' ? 'custom API' : apiProvider}...</p>`;
+      const res = await callNatalApi(apiProvider, apiKey, customUrl, payload);
+      if(res.ok){
+        natalOut.innerHTML = `<pre>${JSON.stringify(res.json || res.payload || res, null, 2)}</pre>`;
+      } else {
+        natalOut.innerHTML = `<p><strong>Notice:</strong> ${res.message || 'Request not performed.'}</p><pre>${JSON.stringify(res.payload || res.json || res, null, 2)}</pre>`;
+      }
+
+    }catch(err){
+      natalResult.hidden = false;
+      payloadPre.textContent = '';
+      natalOut.innerHTML = `<p style="color: #ffd166">Error: ${err.message}</p>`;
+    }
+  });
+
+  // wire tz checkbox to manual field
+  document.getElementById('tzAuto').addEventListener('change', function(e){
+    document.getElementById('natal-tz').disabled = e.target.checked;
+  });
+
+  // convenience: show/hide customUrl when provider=custom
+  document.getElementById('apiProvider').addEventListener('change', function(e){
+    const customUrl = document.getElementById('customUrl');
+    if(e.target.value === 'custom') customUrl.disabled = false;
+    else customUrl.disabled = false; // keep editable but it's optional
+  });
 })();
