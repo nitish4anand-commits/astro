@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Astrology — Daily Horoscopes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Astrology <span class="sub">— Daily Horoscopes</span></h1>
+      <p class="tagline">Discover your sign, read today's guidance, and explore the stars.</p>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="personalized">
+      <form id="dobForm" class="dob-form" aria-label="Find your sign">
+        <label for="dob">Enter your date of birth</label>
+        <div class="form-row">
+          <input id="dob" name="dob" type="date" required>
+          <input id="place" name="place" type="text" placeholder="Place of birth (optional)">
+          <button type="submit">Get my horoscope</button>
+        </div>
+        <p class="form-note">Tip: For an accurate natal chart we would need time and place; this quick lookup finds your sun sign from the date.</p>
+      </form>
+
+      <div id="result" class="result" aria-live="polite" hidden>
+        <h3 id="result-sign"></h3>
+        <p id="result-text"></p>
+      </div>
+    </section>
+
+    <section class="zodiac-grid" aria-label="Zodiac signs">
+      <!-- Aries -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♈</div>
+          <h2>Aries</h2>
+          <p class="date">Mar 21 — Apr 19</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Bold action wins today — trust your instincts and take the lead.</p>
+        </details>
+      </article>
+
+      <!-- Taurus -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♉</div>
+          <h2>Taurus</h2>
+          <p class="date">Apr 20 — May 20</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Stability and small comforts bring clarity; slow down and enjoy the progress.</p>
+        </details>
+      </article>
+
+      <!-- Gemini -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♊</div>
+          <h2>Gemini</h2>
+          <p class="date">May 21 — Jun 20</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Conversations open doors — listen carefully and ask a good question.</p>
+        </details>
+      </article>
+
+      <!-- Cancer -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♋</div>
+          <h2>Cancer</h2>
+          <p class="date">Jun 21 — Jul 22</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Nurture your inner circle; a small supportive gesture goes a long way.</p>
+        </details>
+      </article>
+
+      <!-- Leo -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♌</div>
+          <h2>Leo</h2>
+          <p class="date">Jul 23 — Aug 22</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Shine, but share the stage — collaboration magnifies your impact.</p>
+        </details>
+      </article>
+
+      <!-- Virgo -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♍</div>
+          <h2>Virgo</h2>
+          <p class="date">Aug 23 — Sep 22</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Attention to detail pays off; tidy a loose end and move forward with focus.</p>
+        </details>
+      </article>
+
+      <!-- Libra -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♎</div>
+          <h2>Libra</h2>
+          <p class="date">Sep 23 — Oct 22</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Seek balance — a fair compromise will create momentum.</p>
+        </details>
+      </article>
+
+      <!-- Scorpio -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♏</div>
+          <h2>Scorpio</h2>
+          <p class="date">Oct 23 — Nov 21</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Depth matters; a candid conversation reveals hidden possibilities.</p>
+        </details>
+      </article>
+
+      <!-- Sagittarius -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♐</div>
+          <h2>Sagittarius</h2>
+          <p class="date">Nov 22 — Dec 21</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Adventure calls — consider a small detour that feeds your curiosity.</p>
+        </details>
+      </article>
+
+      <!-- Capricorn -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♑</div>
+          <h2>Capricorn</h2>
+          <p class="date">Dec 22 — Jan 19</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Long-term planning clears the path; one practical step will compound well.</p>
+        </details>
+      </article>
+
+      <!-- Aquarius -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♒</div>
+          <h2>Aquarius</h2>
+          <p class="date">Jan 20 — Feb 18</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Ideas bloom in community — share one and invite feedback.</p>
+        </details>
+      </article>
+
+      <!-- Pisces -->
+      <article class="card">
+        <div class="card-top">
+          <div class="icon">♓</div>
+          <h2>Pisces</h2>
+          <p class="date">Feb 19 — Mar 20</p>
+        </div>
+        <details>
+          <summary>Today's Horoscope</summary>
+          <p class="horoscope">Creativity flows; make space for a restorative activity to recharge.</p>
+        </details>
+      </article>
+    </section>
+
+    <section class="about">
+      <h2>About</h2>
+      <p>This simple template shows the 12 zodiac signs with a short daily horoscope. You can extend it by adding images, a horoscope API, or a search/filter UI.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Made with ✨ — <small>Astrology template</small></p>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

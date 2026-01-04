@@ -1,0 +1,64 @@
+/* Simple, modern styles for the Astrology template */
+:root{
+  --bg-1: #0f1724; /* deep navy */
+  --bg-2: #2b2f4a; /* indigo */
+  --card: rgba(255,255,255,0.05);
+  --accent: #ffd166; /* warm gold */
+  --muted: rgba(255,255,255,0.7);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: linear-gradient(180deg,var(--bg-1),var(--bg-2));
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.container{max-width:1100px;margin:0 auto;padding:2rem}
+
+.site-header{padding:2rem 0 1rem}
+.site-header h1{margin:0;font-weight:600;font-size:1.8rem;letter-spacing:0.3px}
+.site-header .sub{font-weight:300;color:var(--accent);font-size:0.95rem;margin-left:6px}
+.site-header .tagline{margin:0.5rem 0 0;color:var(--muted)}
+
+.zodiac-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;margin-top:1.5rem}
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.04);
+  padding:1rem;border-radius:12px;backdrop-filter: blur(4px);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+.card-top{display:flex;align-items:center;gap:0.9rem}
+.icon{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ffb4a2);display:flex;align-items:center;justify-content:center;color:#0b0b0b;font-size:1.4rem;font-weight:600}
+.card h2{margin:0;font-size:1.05rem}
+.card .date{margin:0;color:var(--muted);font-size:0.86rem}
+
+details{margin-top:0.9rem}
+summary{cursor:pointer;list-style:none;color:var(--muted);outline:none}
+summary::-webkit-details-marker{display:none}
+.horoscope{margin:0.6rem 0 0;color:#e6e6e6;line-height:1.4}
+
+.about{margin-top:2rem;padding:1rem;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)}
+
+.personalized{margin-bottom:1.25rem}
+.dob-form{background:rgba(255,255,255,0.02);padding:0.9rem;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+.dob-form label{font-size:0.95rem;margin-bottom:0.4rem;display:block}
+.form-row{display:flex;gap:0.5rem;align-items:center}
+.form-row input[type="date"], .form-row input[type="text"]{padding:0.55rem 0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#fff}
+.form-row button{padding:0.55rem 0.9rem;border-radius:8px;border:none;background:var(--accent);color:#0b0b0b;font-weight:600;cursor:pointer}
+.form-note{margin:0.5rem 0 0;font-size:0.85rem;color:var(--muted)}
+.result{margin-top:0.8rem;padding:0.9rem;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+.result h3{margin:0 0 0.35rem 0}
+.card.highlight{box-shadow:0 16px 40px rgba(255,209,102,0.12);transform:translateY(-8px);border-color:rgba(255,209,102,0.25)}
+
+.site-footer{padding:2rem 0 4rem;color:var(--muted)}
+
+/* Responsive tweaks */
+@media (max-width:560px){
+  .icon{width:44px;height:44px;font-size:1.1rem}
+  .container{padding:1rem}
+}
