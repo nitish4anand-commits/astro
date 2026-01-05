@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Kundli - Vedic Astrology App Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <nav class="bg-white shadow">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between">
+      <h1 class="text-2xl font-bold text-indigo-600">🔮 Astro Kundli</h1>
+      <div class="space-x-4">
+        <button onclick="showPage('home')" class="text-gray-700 hover:text-indigo-600">Home</button>
+        <button onclick="showPage('demo')" class="text-gray-700 hover:text-indigo-600">Demo</button>
+        <button onclick="showPage('create')" class="text-indigo-600 font-semibold">Create Kundli</button>
+        <button onclick="showPage('kundli')" class="text-gray-700 hover:text-indigo-600">Sample Kundli</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto p-6">
+    <!-- Home Page -->
+    <div id="home-page" class="hidden">
+      <div class="text-center py-12">
+        <h2 class="text-5xl font-bold mb-4">Vedic Astrology, Simplified</h2>
+        <p class="text-xl text-gray-600 mb-8">Calculate your kundli (birth chart) and discover insights from Vedic astrology with accuracy and clarity.</p>
+        <button onclick="showPage('create')" class="px-8 py-3 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700">Create Your Kundli</button>
+      </div>
+    </div>
+
+    <!-- Demo Page -->
+    <div id="demo-page" class="hidden">
+      <h2 class="text-3xl font-bold mb-6">Demo Kundlis</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg" onclick="showPage('kundli')">
+          <h3 class="text-xl font-bold mb-2">Raj Kapoor</h3>
+          <p class="text-gray-600 mb-4">Dec 14, 1924 | Peshawar, Pakistan (then India)</p>
+          <p class="text-sm text-indigo-600">View Kundli →</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg" onclick="showPage('kundli')">
+          <h3 class="text-xl font-bold mb-2">Indira Gandhi</h3>
+          <p class="text-gray-600 mb-4">Nov 19, 1917 | Allahabad, India</p>
+          <p class="text-sm text-indigo-600">View Kundli →</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Kundli Page -->
+    <div id="create-page">
+      <!-- Error message (hidden by default) -->
+      <div id="errorMsg" class="hidden text-red-600 bg-red-50 p-4 rounded"></div>
+
+      <!-- Name field -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Name *</label>
+        <input type="text" name="name" required placeholder="Your full name" class="mt-2 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+      <!-- Date/Time field -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Date / Time of Birth *</label>
+        <input type="datetime-local" name="local_datetime" required class="mt-2 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500">
+        <p class="text-sm text-gray-500 mt-1">If you don't know the time, toggle "I don't know birth time" and we'll use noon.</p>
+      </div>
+
+      <!-- Place field with autocomplete dropdown -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Place *</label>
+        <div class="relative mt-2">
+          <input type="text" name="place" placeholder="City, India" required class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500" id="placeInput">
+          <ul id="suggestions" class="absolute mt-1 w-full bg-white border border-gray-300 rounded shadow max-h-56 overflow-auto hidden z-10">
+            <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer" onclick="selectPlace('Mumbai, India', 19.076, 72.8777)">📍 Mumbai, India</li>
+            <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer" onclick="selectPlace('Bengaluru, India', 12.9716, 77.5946)">📍 Bengaluru, India</li>
+            <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer" onclick="selectPlace('New Delhi, India', 28.6139, 77.209)">📍 New Delhi, India</li>
+            <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer" onclick="selectPlace('Chennai, India', 13.0827, 80.2707)">📍 Chennai, India</li>
+          </ul>
+        </div>
+        <p class="text-sm text-gray-500 mt-1">Suggestions from an offline Indian gazetteer.</p>
+      </div>
+
+      <!-- Lat/Lon fields -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Latitude (optional)</label>
+          <input type="number" step="any" name="lat" placeholder="19.076" class="mt-2 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500" id="latInput">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Longitude (optional)</label>
+          <input type="number" step="any" name="lon" placeholder="72.8777" class="mt-2 w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500" id="lonInput">
+        </div>
+      </div>
+
+      <!-- Checkbox: Don't know time -->
+      <div class="flex items-center gap-3 pt-2">
+        <input type="checkbox" name="unknownTime" id="unknownTimeCheckbox" class="w-4 h-4">
+        <label for="unknownTimeCheckbox" class="text-sm">I don't know birth time</label>
+      </div>
+
+      <!-- Submit button -->
+      <div class="flex justify-between items-center pt-4">
+        <div></div>
+        <button type="submit" id="submitBtn" class="px-6 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-700 disabled:opacity-50">Create Kundli</button>
+      </div>
+    </form>
+
+      </form>
+
+      <!-- Demo result (hidden) -->
+      <div id="resultSection" class="mt-8 hidden">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+          <h3 class="text-xl font-bold text-green-700 mb-2">✅ Kundli Created!</h3>
+          <p class="text-gray-700">Chart ID: <code id="chartId" class="bg-gray-100 px-2 py-1 rounded">chart-demo-123</code></p>
+          <p class="text-gray-700 mt-2">Redirecting to your kundli dashboard...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kundli View Page -->
+    <div id="kundli-page" class="hidden">
+      <div class="mb-6">
+        <button onclick="showPage('create')" class="text-indigo-600 hover:text-indigo-800">← Back</button>
+      </div>
+      <h2 class="text-3xl font-bold mb-6">Your Kundli Dashboard</h2>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Chart Info -->
+        <div class="lg:col-span-2 bg-white rounded-lg shadow p-8">
+          <h3 class="text-2xl font-bold mb-4">Birth Details</h3>
+          <div class="grid grid-cols-2 gap-4 text-gray-700">
+            <div>
+              <p class="text-sm font-semibold text-gray-500">Name</p>
+              <p class="text-lg">Your Name</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-500">Date & Time</p>
+              <p class="text-lg">Jan 1, 1990 12:00 PM</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-500">Place</p>
+              <p class="text-lg">Mumbai, India</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-500">Timezone</p>
+              <p class="text-lg">Asia/Kolkata (IST)</p>
+            </div>
+          </div>
+
+          <hr class="my-6">
+
+          <h3 class="text-xl font-bold mb-4">Planets (Sidereal Longitudes)</h3>
+          <div class="space-y-3 font-mono text-sm">
+            <div class="flex justify-between">
+              <span>☀️ Sun</span>
+              <span class="text-indigo-600">16° 45' Capricorn</span>
+            </div>
+            <div class="flex justify-between">
+              <span>☽ Moon</span>
+              <span class="text-indigo-600">24° 32' Leo</span>
+            </div>
+            <div class="flex justify-between">
+              <span>♂ Mars</span>
+              <span class="text-indigo-600">12° 18' Libra</span>
+            </div>
+            <div class="flex justify-between">
+              <span>♃ Jupiter</span>
+              <span class="text-indigo-600">08° 50' Aquarius</span>
+            </div>
+            <div class="flex justify-between">
+              <span>♄ Saturn</span>
+              <span class="text-indigo-600">28° 15' Scorpio</span>
+            </div>
+            <div class="flex justify-between">
+              <span>⬆ Ascendant (Lagna)</span>
+              <span class="text-indigo-600">15° 20' Libra</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar: Dashas -->
+        <div class="bg-indigo-50 rounded-lg shadow p-6">
+          <h3 class="text-xl font-bold mb-4">Current Mahadasha</h3>
+          <div class="space-y-4">
+            <div>
+              <p class="text-sm font-semibold text-indigo-700">Venus Mahadasha</p>
+              <p class="text-xs text-gray-600">2020 - 2040</p>
+              <div class="mt-1 w-full bg-gray-300 rounded h-2">
+                <div class="bg-indigo-600 h-2 rounded" style="width: 45%"></div>
+              </div>
+              <p class="text-xs text-gray-600 mt-1">45% Complete</p>
+            </div>
+
+            <hr class="my-4">
+
+            <div>
+              <p class="text-sm font-semibold text-indigo-700">Sun Antardasha (Current)</p>
+              <p class="text-xs text-gray-600">2024 - 2025</p>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <h3 class="text-lg font-bold mb-3">Nakshatras</h3>
+          <div class="space-y-2 text-sm">
+            <div><span class="font-semibold">Moon Nakshatra:</span> Magha</div>
+            <div><span class="font-semibold">Birth Nakshatra Pada:</span> 2nd Quarter</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script>
+    // Page routing
+    function showPage(pageName) {
+      document.getElementById('home-page').classList.add('hidden');
+      document.getElementById('demo-page').classList.add('hidden');
+      document.getElementById('create-page').classList.add('hidden');
+      document.getElementById('kundli-page').classList.add('hidden');
+      
+      document.getElementById(pageName + '-page').classList.remove('hidden');
+    }
+
+    // Default: show home
+    showPage('home');
+
+    const placeInput = document.getElementById('placeInput');
+    const suggestions = document.getElementById('suggestions');
+    const form = document.getElementById('kundliForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const resultSection = document.getElementById('resultSection');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Show/hide suggestions on focus
+    placeInput.addEventListener('focus', () => {
+      suggestions.classList.remove('hidden');
+    });
+
+    placeInput.addEventListener('blur', () => {
+      setTimeout(() => suggestions.classList.add('hidden'), 200);
+    });
+
+    function selectPlace(name, lat, lon) {
+      placeInput.value = name;
+      document.getElementById('latInput').value = lat;
+      document.getElementById('lonInput').value = lon;
+      suggestions.classList.add('hidden');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating…';
+
+      // Simple demo: just show success message
+      setTimeout(() => {
+        resultSection.classList.remove('hidden');
+        document.getElementById('chartId').textContent = 'chart-' + Math.random().toString(36).substr(2, 9);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Kundli';
+        setTimeout(() => showPage('kundli'), 2000);
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
