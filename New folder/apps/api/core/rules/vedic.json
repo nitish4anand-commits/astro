@@ -1,0 +1,207 @@
+[
+  {
+    "id": "career_growth_jupiter_10",
+    "domain": "career",
+    "system": "vedic",
+    "tone": "positive",
+    "headline": "Career expansion windows under Jupiter",
+    "description": "When Jupiter activates the 10th from Moon/Lagna and 10th-related natal strengths are present, expect clear career uplift.",
+    "timeframe": "next_90_days",
+    "weight": 0.75,
+    "conditions": {
+      "all": [
+        {"path": "transit.houses.Jupiter.from_moon", "op": "in", "value": [10], "why_format": "Transit Jupiter in {path} = {cur}"},
+        {"path": "natal.strength.Jupiter", "op": "ge", "value": 0.6, "why_format": "Natal Jupiter strength = {cur}"}
+      ],
+      "any": [
+        {"path": "natal.houses.Sun.from_lagna", "op": "eq", "value": 10, "why_format": "Sun in 10th from Lagna = {cur}"},
+        {"path": "natal.houses.Mercury.from_lagna", "op": "eq", "value": 10, "why_format": "Mercury in 10th from Lagna = {cur}"}
+      ]
+    },
+    "what": [
+      "New projects or leadership responsibilities open",
+      "Visibility improves via mentors and senior stakeholders",
+      "Performance reviews trend favorable in this window"
+    ],
+    "do": [
+      "Pitch initiatives aligned to long-term impact",
+      "Book stakeholder reviews during Jupiter aspect windows",
+      "Document outcomes to lock recognition"
+    ],
+    "dont": [
+      "Underestimate scope—align expectations early",
+      "Defer key decisions beyond the window",
+      "Ignore mentorship offers"
+    ]
+  },
+  {
+    "id": "wealth_venus_2_11",
+    "domain": "wealth",
+    "system": "vedic",
+    "tone": "positive",
+    "headline": "Cashflow tailwind under Venus",
+    "description": "Venus activating cashflow houses with dignified placement produces tangible income effects.",
+    "timeframe": "now",
+    "weight": 0.7,
+    "conditions": {
+      "all": [
+        {"path": "dasha.maha.placement.house_from_lagna", "op": "in", "value": [2,11], "why_format": "Mahadasha lord house from Lagna = {cur}"},
+        {"path": "natal.dignity.Venus", "op": "in", "value": ["Exalted", "Own", "Mooltrikona"], "why_format": "Venus dignity = {cur}"}
+      ],
+      "any": [
+        {"path": "transit.houses.Jupiter.from_lagna", "op": "in", "value": [2,11], "why_format": "Transit Jupiter house from Lagna = {cur}"},
+        {"path": "natal.yogas.DhanaYoga", "op": "eq", "value": true, "why_format": "Dhana Yoga active = {cur}"}
+      ]
+    },
+    "what": [
+      "Collections improve; receivables settle faster",
+      "Pricing power modestly increases for value offers",
+      "Repeat buyers contribute to steady inflows"
+    ],
+    "do": [
+      "Close pending invoices within active windows",
+      "Introduce tasteful upsells for loyal segments",
+      "Allocate gains to reserve and growth buckets"
+    ],
+    "dont": [
+      "Extend unsecured credit",
+      "Over-leverage on discretionary upgrades",
+      "Ignore baseline expense audits"
+    ]
+  },
+  {
+    "id": "relationships_jupiter_7",
+    "domain": "relationships",
+    "system": "vedic",
+    "tone": "positive",
+    "headline": "Partnerships strengthen under Jupiter 7th",
+    "description": "Jupiter’s 7th house transit with supportive natal context elevates relationships and agreements.",
+    "timeframe": "next_90_days",
+    "weight": 0.72,
+    "conditions": {
+      "all": [
+        {"path": "transit.houses.Jupiter.from_moon", "op": "eq", "value": 7, "why_format": "Transit Jupiter from Moon = {cur}"},
+        {"path": "natal.strength.Venus", "op": "ge", "value": 0.55, "why_format": "Natal Venus strength = {cur}"}
+      ],
+      "any": [
+        {"path": "natal.yogas.Gajakesari", "op": "eq", "value": true, "why_format": "Gajakesari active = {cur}"},
+        {"path": "natal.houses.Venus.from_lagna", "op": "in", "value": [1,4,7,10], "why_format": "Venus in kendra from Lagna = {cur}"}
+      ]
+    },
+    "what": [
+      "Agreements finalize with fair terms",
+      "Partners exhibit reliability and mutual support",
+      "Family dynamics stabilize with shared routines"
+    ],
+    "do": [
+      "Schedule key negotiations in Jupiter windows",
+      "Codify mutual expectations in writing",
+      "Invest time in shared activities"
+    ],
+    "dont": [
+      "Gloss over commitments",
+      "Bypass due diligence for major decisions",
+      "Let schedules drift without check-ins"
+    ]
+  },
+  {
+    "id": "health_saturn_6",
+    "domain": "health",
+    "system": "vedic",
+    "tone": "cautionary",
+    "headline": "Routine health discipline under Saturn",
+    "description": "Saturn’s 6th overlay highlights lifestyle compliance; avoid overwork and neglect.",
+    "timeframe": "next_90_days",
+    "weight": 0.68,
+    "conditions": {
+      "all": [
+        {"path": "transit.houses.Saturn.from_moon", "op": "eq", "value": 6, "why_format": "Transit Saturn from Moon = {cur}"}
+      ],
+      "any": [
+        {"path": "natal.combust.Mercury", "op": "eq", "value": true, "why_format": "Mercury combust = {cur}"},
+        {"path": "natal.houses.Mars.from_lagna", "op": "in", "value": [6,8,12], "why_format": "Mars in dusthana from Lagna = {cur}"}
+      ]
+    },
+    "what": [
+      "Sleep and digestion respond to steady routines",
+      "Stress tolerance improves with pacing",
+      "Recovery is reliable when structure is maintained"
+    ],
+    "do": [
+      "Fix wake/sleep windows and meal timing",
+      "Batch demanding tasks to prevent overload",
+      "Add light mobility work to daily routine"
+    ],
+    "dont": [
+      "Skip checkups if symptoms persist",
+      "Stack consecutive late nights",
+      "Self-medicate for persistent issues"
+    ]
+  },
+  {
+    "id": "learning_travel_9",
+    "domain": "learning_travel",
+    "system": "vedic",
+    "tone": "positive",
+    "headline": "9th house activation favors study and travel",
+    "description": "Benefic overlays to the 9th increase outcomes from study, certifications, and trips.",
+    "timeframe": "next_12_months",
+    "weight": 0.66,
+    "conditions": {
+      "all": [
+        {"path": "natal.houses.Jupiter.from_lagna", "op": "eq", "value": 9, "why_format": "Jupiter in 9th from Lagna = {cur}"}
+      ],
+      "any": [
+        {"path": "transit.houses.Jupiter.from_lagna", "op": "in", "value": [9,1], "why_format": "Transit Jupiter house from Lagna = {cur}"},
+        {"path": "dasha.antar.placement.house_from_moon", "op": "eq", "value": 9, "why_format": "Antardasha lord house from Moon = {cur}"}
+      ]
+    },
+    "what": [
+      "Certification goals complete on schedule",
+      "Travel yields useful contacts and insights",
+      "Mentor guidance appears at right moments"
+    ],
+    "do": [
+      "Sequence study milestones to Jupiter windows",
+      "Prefer learning with practical application",
+      "Plan trips around benefic dates"
+    ],
+    "dont": [
+      "Overbook beyond capacity",
+      "Skip reflection on trip outcomes",
+      "Choose low-signal courses"
+    ]
+  },
+  {
+    "id": "risk_nodes_angles",
+    "domain": "risks",
+    "system": "vedic",
+    "tone": "cautionary",
+    "headline": "Nodal triggers at angles—risk management focus",
+    "description": "Rahu/Ketu pulsing angles or dusthanas warrant deliberate pacing and controls.",
+    "timeframe": "now",
+    "weight": 0.6,
+    "conditions": {
+      "any": [
+        {"path": "transit.houses.Rahu.from_lagna", "op": "in", "value": [1,4,7,10], "why_format": "Transit Rahu house from Lagna = {cur}"},
+        {"path": "transit.houses.Ketu.from_lagna", "op": "in", "value": [1,4,7,10], "why_format": "Transit Ketu house from Lagna = {cur}"},
+        {"path": "natal.houses.Saturn.from_lagna", "op": "in", "value": [6,8,12], "why_format": "Saturn in dusthana from Lagna = {cur}"}
+      ]
+    },
+    "what": [
+      "Noise rises around priorities and attention",
+      "Unexpected pivots possible; keep buffers ready",
+      "Reputation outcomes depend on process discipline"
+    ],
+    "do": [
+      "Add review gates and peer checks",
+      "Keep reserves and contingency tasks",
+      "Avoid unverified commitments"
+    ],
+    "dont": [
+      "Trade reputational risk for speed",
+      "Skip documentation in critical paths",
+      "Ignore early warning signals"
+    ]
+  }
+]

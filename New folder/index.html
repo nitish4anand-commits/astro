@@ -51,6 +51,7 @@
 
     <!-- Create Kundli Page -->
     <div id="create-page">
+      <form id="kundliForm">
       <!-- Error message (hidden by default) -->
       <div id="errorMsg" class="hidden text-red-600 bg-red-50 p-4 rounded"></div>
 
@@ -105,8 +106,6 @@
         <div></div>
         <button type="submit" id="submitBtn" class="px-6 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-700 disabled:opacity-50">Create Kundli</button>
       </div>
-    </form>
-
       </form>
 
       <!-- Demo result (hidden) -->
@@ -133,19 +132,19 @@
           <div class="grid grid-cols-2 gap-4 text-gray-700">
             <div>
               <p class="text-sm font-semibold text-gray-500">Name</p>
-              <p class="text-lg">Your Name</p>
+              <p class="text-lg" id="bd-name">Your Name</p>
             </div>
             <div>
               <p class="text-sm font-semibold text-gray-500">Date & Time</p>
-              <p class="text-lg">Jan 1, 1990 12:00 PM</p>
+              <p class="text-lg" id="bd-datetime">Jan 1, 1990 12:00 PM</p>
             </div>
             <div>
               <p class="text-sm font-semibold text-gray-500">Place</p>
-              <p class="text-lg">Mumbai, India</p>
+              <p class="text-lg" id="bd-place">Mumbai, India</p>
             </div>
             <div>
               <p class="text-sm font-semibold text-gray-500">Timezone</p>
-              <p class="text-lg">Asia/Kolkata (IST)</p>
+              <p class="text-lg" id="bd-timezone">Resolved</p>
             </div>
           </div>
 
@@ -153,30 +152,7 @@
 
           <h3 class="text-xl font-bold mb-4">Planets (Sidereal Longitudes)</h3>
           <div class="space-y-3 font-mono text-sm">
-            <div class="flex justify-between">
-              <span>☀️ Sun</span>
-              <span class="text-indigo-600">16° 45' Capricorn</span>
-            </div>
-            <div class="flex justify-between">
-              <span>☽ Moon</span>
-              <span class="text-indigo-600">24° 32' Leo</span>
-            </div>
-            <div class="flex justify-between">
-              <span>♂ Mars</span>
-              <span class="text-indigo-600">12° 18' Libra</span>
-            </div>
-            <div class="flex justify-between">
-              <span>♃ Jupiter</span>
-              <span class="text-indigo-600">08° 50' Aquarius</span>
-            </div>
-            <div class="flex justify-between">
-              <span>♄ Saturn</span>
-              <span class="text-indigo-600">28° 15' Scorpio</span>
-            </div>
-            <div class="flex justify-between">
-              <span>⬆ Ascendant (Lagna)</span>
-              <span class="text-indigo-600">15° 20' Libra</span>
-            </div>
+            <div id="vedic-planets" class="space-y-2"></div>
           </div>
         </div>
 
@@ -185,19 +161,19 @@
           <h3 class="text-xl font-bold mb-4">Current Mahadasha</h3>
           <div class="space-y-4">
             <div>
-              <p class="text-sm font-semibold text-indigo-700">Venus Mahadasha</p>
-              <p class="text-xs text-gray-600">2020 - 2040</p>
+              <p class="text-sm font-semibold text-indigo-700" id="mahadasha-name">—</p>
+              <p class="text-xs text-gray-600" id="mahadasha-dates">—</p>
               <div class="mt-1 w-full bg-gray-300 rounded h-2">
-                <div class="bg-indigo-600 h-2 rounded" style="width: 45%"></div>
+                <div class="bg-indigo-600 h-2 rounded" id="mahadasha-progress" style="width: 0%"></div>
               </div>
-              <p class="text-xs text-gray-600 mt-1">45% Complete</p>
+              <p class="text-xs text-gray-600 mt-1" id="mahadasha-progress-text">—</p>
             </div>
 
             <hr class="my-4">
 
             <div>
-              <p class="text-sm font-semibold text-indigo-700">Sun Antardasha (Current)</p>
-              <p class="text-xs text-gray-600">2024 - 2025</p>
+              <p class="text-sm font-semibold text-indigo-700" id="antardasha-name">—</p>
+              <p class="text-xs text-gray-600" id="antardasha-dates">—</p>
             </div>
           </div>
 
@@ -213,6 +189,9 @@
     </div>
 
   <script>
+    const NOMINATIM_URL = 'https://nominatim.openstreetmap.org';
+    // Optional Google Places fallback (set window.GOOGLE_MAPS_API_KEY at runtime for dev use)
+    const GOOGLE_MAPS_API_KEY = (window && window.GOOGLE_MAPS_API_KEY) ? String(window.GOOGLE_MAPS_API_KEY) : '';
     // Page routing
     function showPage(pageName) {
       document.getElementById('home-page').classList.add('hidden');
@@ -232,10 +211,83 @@
     const errorMsg = document.getElementById('errorMsg');
     const resultSection = document.getElementById('resultSection');
     const submitBtn = document.getElementById('submitBtn');
+    const bdName = document.getElementById('bd-name');
+    const bdDatetime = document.getElementById('bd-datetime');
+    const bdPlace = document.getElementById('bd-place');
+    const bdTimezone = document.getElementById('bd-timezone');
+    const vedicPlanets = document.getElementById('vedic-planets');
+    const mahaName = document.getElementById('mahadasha-name');
+    const mahaDates = document.getElementById('mahadasha-dates');
+    const mahaProgress = document.getElementById('mahadasha-progress');
+    const mahaProgressText = document.getElementById('mahadasha-progress-text');
+    const antarName = document.getElementById('antardasha-name');
+    const antarDates = document.getElementById('antardasha-dates');
 
-    // Show/hide suggestions on focus
-    placeInput.addEventListener('focus', () => {
-      suggestions.classList.remove('hidden');
+    // Fetch Nominatim suggestions, fallback to Google Places if configured
+    let debounceTimer;
+    placeInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      const q = placeInput.value.trim();
+      if (!q) { suggestions.classList.add('hidden'); return; }
+      debounceTimer = setTimeout(async () => {
+        try {
+          const url = `${NOMINATIM_URL}/search?q=${encodeURIComponent(q)}&format=jsonv2&addressdetails=1&limit=6`;
+          const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+          const data = await res.json();
+          suggestions.innerHTML = '';
+          data.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'px-3 py-2 hover:bg-gray-100 cursor-pointer';
+            li.textContent = `📍 ${item.display_name}`;
+            li.onclick = () => selectPlace(item.display_name, item.lat, item.lon);
+            suggestions.appendChild(li);
+          });
+          if (data.length === 0 && GOOGLE_MAPS_API_KEY) {
+            // Fallback: Google Places Autocomplete (REST). Note: May require proxy for CORS in production.
+            try {
+              const gpUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(q)}&types=(cities)&key=${GOOGLE_MAPS_API_KEY}`;
+              const gpRes = await fetch(gpUrl);
+              const gpData = await gpRes.json();
+              if (Array.isArray(gpData.predictions)) {
+                for (const p of gpData.predictions.slice(0, 6)) {
+                  const li = document.createElement('li');
+                  li.className = 'px-3 py-2 hover:bg-gray-100 cursor-pointer';
+                  li.textContent = `📍 ${p.description}`;
+                  // Without place details, we cannot resolve lat/lon here; allow selection for name only
+                  li.onclick = () => selectPlace(p.description, '', '');
+                  suggestions.appendChild(li);
+                }
+              }
+            } catch (gErr) {
+              console.warn('Google Places fallback error', gErr);
+            }
+          }
+          suggestions.classList.remove('hidden');
+        } catch (err) {
+          console.warn('Nominatim error', err);
+          // Attempt Google fallback if Nominatim fails
+          if (GOOGLE_MAPS_API_KEY) {
+            try {
+              const gpUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(q)}&types=(cities)&key=${GOOGLE_MAPS_API_KEY}`;
+              const gpRes = await fetch(gpUrl);
+              const gpData = await gpRes.json();
+              suggestions.innerHTML = '';
+              if (Array.isArray(gpData.predictions)) {
+                for (const p of gpData.predictions.slice(0, 6)) {
+                  const li = document.createElement('li');
+                  li.className = 'px-3 py-2 hover:bg-gray-100 cursor-pointer';
+                  li.textContent = `📍 ${p.description}`;
+                  li.onclick = () => selectPlace(p.description, '', '');
+                  suggestions.appendChild(li);
+                }
+              }
+              suggestions.classList.remove('hidden');
+            } catch (gErr) {
+              console.warn('Google Places fallback error', gErr);
+            }
+          }
+        }
+      }, 250);
     });
 
     placeInput.addEventListener('blur', () => {
@@ -255,14 +307,105 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Creating…';
 
-      // Simple demo: just show success message
-      setTimeout(() => {
+      try {
+        const name = document.querySelector('input[name="name"]').value.trim();
+        const dtInput = document.querySelector('input[name="local_datetime"]').value;
+        const place = document.querySelector('input[name="place"]').value.trim();
+        const latVal = document.getElementById('latInput').value;
+        const lonVal = document.getElementById('lonInput').value;
+        const unknownTime = document.getElementById('unknownTimeCheckbox').checked;
+
+        if (!name || !dtInput || !place) throw new Error('Please fill all required fields.');
+
+        // Handle unknown time by forcing noon
+        let localDatetime = dtInput;
+        if (unknownTime) {
+          const [datePart] = dtInput.split('T');
+          localDatetime = `${datePart}T12:00`;
+        }
+
+        const payload = {
+          name,
+          local_datetime: localDatetime,
+          place,
+          lat: latVal ? parseFloat(latVal) : null,
+          lon: lonVal ? parseFloat(lonVal) : null,
+          unknown_time: unknownTime
+        };
+
+        // Call chart API
+        const apiBase = 'http://localhost:8000';
+        const chartRes = await fetch(`${apiBase}/v1/chart`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!chartRes.ok) throw new Error(`Chart API error: ${chartRes.status}`);
+        const chart = await chartRes.json();
+        window.chartData = chart;
+
+        // Update dashboard basics
+        bdName.textContent = chart.input_echo.name;
+        const dt = new Date(chart.astronomy.utc_datetime);
+        bdDatetime.textContent = dt.toUTCString();
+        bdPlace.textContent = chart.input_echo.place;
+        bdTimezone.textContent = 'Resolved';
+
+        // Populate Vedic planets (top 6)
+        vedicPlanets.innerHTML = '';
+        (chart.vedic.planets || []).slice(0, 6).forEach(p => {
+          const row = document.createElement('div');
+          row.className = 'flex justify-between';
+          const left = document.createElement('span');
+          left.textContent = String(p.name || '');
+          const right = document.createElement('span');
+          right.className = 'text-indigo-600';
+          right.textContent = `${p.degree}° ${p.rashi}`;
+          row.appendChild(left);
+          row.appendChild(right);
+          vedicPlanets.appendChild(row);
+        });
+
+        // Fetch dashas
+        try {
+          const dashaRes = await fetch(`${apiBase}/v1/dasha/vimshottari`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (dashaRes.ok) {
+            const dj = await dashaRes.json();
+            const maha = dj.dashas.find(d => d.level === 'Maha' && d.current);
+            const antar = dj.dashas.find(d => d.level === 'Antar' && d.current);
+            if (maha) {
+              mahaName.textContent = `${maha.planet} Mahadasha`;
+              const sd = new Date(maha.start_date), ed = new Date(maha.end_date);
+              mahaDates.textContent = `${sd.getFullYear()} - ${ed.getFullYear()}`;
+              const total = ed - sd; const elapsed = Date.now() - sd.getTime();
+              const pct = Math.max(0, Math.min(100, Math.round((elapsed/total)*100)));
+              mahaProgress.style.width = pct + '%';
+              mahaProgressText.textContent = `${pct}% Complete`;
+            }
+            if (antar) {
+              antarName.textContent = `${antar.planet} Antardasha (Current)`;
+              const sd = new Date(antar.start_date), ed = new Date(antar.end_date);
+              antarDates.textContent = `${sd.getFullYear()} - ${ed.getFullYear()}`;
+            }
+          }
+        } catch (e2) { console.warn('Dasha fetch failed', e2); }
+
+        // Success
         resultSection.classList.remove('hidden');
-        document.getElementById('chartId').textContent = 'chart-' + Math.random().toString(36).substr(2, 9);
+        document.getElementById('chartId').textContent = chart.chart_id || ('chart-' + Math.random().toString(36).substr(2, 9));
+        setTimeout(() => showPage('kundli'), 1200);
+      } catch (err) {
+        console.error(err);
+        errorMsg.textContent = err.message || 'Failed to create chart.';
+        errorMsg.classList.remove('hidden');
+      } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Create Kundli';
-        setTimeout(() => showPage('kundli'), 2000);
-      }, 1500);
+      }
     });
   </script>
 </body>

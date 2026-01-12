@@ -1,0 +1,14 @@
+{
+  "extends": ["next", "next/core-web-vitals"],
+  "rules": {
+    "react/no-danger": "error"
+  },
+  "overrides": [
+    {
+      "files": ["src/components/SafeHTML.tsx"],
+      "rules": {
+        "react/no-danger": "off"
+      }
+    }
+  ]
+}
